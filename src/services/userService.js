@@ -49,8 +49,8 @@ async function loginUser(emailId, password) {
     if (user && (await bcrypt.compare(decodedPass, user.password))) {
       const token = jwt.sign(
         {
-          user_id: user._id,
-          emailId: user.emailId,
+          id: user.id,
+          emailId: user.emailId
         },
         process.env.TOKEN_KEY,
         {
@@ -72,9 +72,9 @@ async function loginUser(emailId, password) {
   }
 }
 
-async function logoutUser(userId) {
+async function logoutUser(emailId) {
   try {
-    const user = await User.findByPk(userId);
+    const user = await User.findOne({where: {emailId}});
 
     if (user) {
       // Update isActive to 0 (logged out)

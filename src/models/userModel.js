@@ -1,31 +1,42 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require('./db');
+const sequelize = require("./db");
+const Post = require('./postModel')
 
-const User = sequelize.define("User", {
-  firstName: {
-    type: DataTypes.STRING,
-    allowNull: false,
+const User = sequelize.define(
+  "User",
+  {
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    emailId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
-  lastName: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  emailId: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  isActive: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
+  {
+    timestamps: false,
   }
-}, {
-  timestamps: false
-});
+);
+
+User.associate = (models) => {
+  User.hasMany(models.Post, {
+    foreignKey: "userId",
+  });
+}
 
 // Synchronize the model with the database (creates the "Users" table if it doesn't exist)
 User.sync()

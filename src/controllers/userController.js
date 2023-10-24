@@ -1,5 +1,6 @@
 const userService = require('../services/userService');
-const emailValidation = require('../helpers/validateEmail')
+const emailValidation = require('../helpers/validateEmail');
+const verifyToken = require('../middlewares/auth')
 
 exports.signup = async (req, res) => {
   const { firstName, lastName, emailId, password } = req.body;
@@ -54,8 +55,15 @@ exports.login = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
+
+    const authHeader = req.headers['authorization'];
+
+    if (!authHeader) {
+      return res.status(401).json({ success: false, message: 'Authorization header missing' });
+    }
+
     // Call the logout function from userService to handle the logout process
-    const userId = req.user.id;
+    const userId = req.user.emailId;
 
     // Call a function from userService to handle the logout process
     await userService.logoutUser(userId);
