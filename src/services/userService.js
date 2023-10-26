@@ -50,11 +50,13 @@ async function loginUser(emailId, password) {
       const token = jwt.sign(
         {
           id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
           emailId: user.emailId
         },
         process.env.TOKEN_KEY,
         {
-          expiresIn: '1h',
+          expiresIn: '2h',
         }
       );
 
