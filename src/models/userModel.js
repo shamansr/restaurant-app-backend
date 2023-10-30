@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("./db");
-const Post = require('./postModel')
+const Friend = require('../models/friendModel')
 
 const User = sequelize.define(
   "User",
@@ -11,7 +11,7 @@ const User = sequelize.define(
     },
     lastName: {
       type: DataTypes.STRING,
-      allowNull: false, 
+      allowNull: false,
     },
     emailId: {
       type: DataTypes.STRING,
@@ -36,7 +36,10 @@ User.associate = (models) => {
   User.hasMany(models.Post, {
     foreignKey: "userId",
   });
-}
+  User.belongsToMany(User, { through: 'Friend' })
+};
+
+
 
 // Synchronize the model with the database (creates the "Users" table if it doesn't exist)
 User.sync()

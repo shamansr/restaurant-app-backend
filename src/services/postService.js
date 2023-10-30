@@ -1,5 +1,6 @@
 const Post = require('../models/postModel');
-
+const Friend = require('../models/friendModel')
+const sequelize = require('../models/db')
 
 // Function to handle create post
 async function createPost(content, userId) {
@@ -23,14 +24,34 @@ async function createPost(content, userId) {
   }
 }
 
-async function getPosts() {
+async function getPosts(userId) {
   try {
-    const posts = await Post.findAll(); // Retrieve all posts from the database
+    if (!userId) {
+      throw new Error('User Id is required');
+    }
+
+    // Use Sequelize to create a query that joins the posts, users, and friends tables
+    const posts = await sequelize.query(
+      `SELECT p.id, p.content, p.likes
+       FROM posts p
+       WHERE p.userId = :userId
+       OR p.userId IN (
+         SELECT f.friendId
+         FROM friends f
+         WHERE f.userId = :userId
+       )`,
+      {
+        replacements: { userId },
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+
     return posts;
   } catch (error) {
     throw error;
   }
 }
+
 
 async function incrementLikes(postId) {
   try {

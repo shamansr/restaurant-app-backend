@@ -1,32 +1,36 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require('./db');
-const User = require('./userModel'); // Import the User model
+const sequelize = require("./db");
+const User = require("./userModel"); // Import the User model
 
-const Post = sequelize.define("Post", {
-  content: {
-    type: DataTypes.TEXT,
-    allowNull: false
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User, 
-      key: 'id',   
+const Post = sequelize.define(
+  "Post",
+  {
+    content: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: User,
+        key: "id",
+      },
+    },
+    likes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
   },
-  likes: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0,
-  },
-}, {
-  timestamps: false
-});
+  {
+    timestamps: false,
+  }
+);
 
 // Define the association between Post and User
 Post.associate = (models) => {
-    Post.belongsTo(models.User, { foreignKey: 'userId' });
-}
+  Post.belongsTo(models.User, { foreignKey: "userId" });
+};
 
 // Synchronize the model with the database
 Post.sync()
